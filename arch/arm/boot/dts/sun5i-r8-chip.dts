@@ -2,6 +2,7 @@
  * Copyright 2015 Maxime Ripard
  *
  * Maxime Ripard <maxime.ripard@free-electrons.com>
+ * Edited by Víctor Mayoral Vilches <victor@erlerobot.com>
  *
  * This file is dual-licensed: you can use it either under the terms
  * of the GPL or the X11 license, at your option. Note that this dual
@@ -58,6 +59,7 @@
 		i2c2 = &i2c2;
 		serial0 = &uart1;
 		serial1 = &uart3;
+		spi2 = &spi2;
 	};
 
 	chosen {
@@ -452,6 +454,35 @@
 	        allwinner,function = "gpio_in";
 	        allwinner,drive = <SUN4I_PINCTRL_10_MA>;
 	        allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+	};
+
+	spi2_pins_a: spi2@0 {
+		allwinner,pins = "PE1", "PE2", "PE3";
+		allwinner,function = "spi2";
+		allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+	};
+
+	spi2_cs0_pins_a: spi2_cs0@0 {
+		allwinner,pins = "PE0";
+		allwinner,function = "spi2";
+		allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+	};
+};
+
+/* Add support for SPI */
+&spi2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi2_pins_a>,
+		    <&spi2_cs0_pins_a>; 
+	status = "okay";
+	spi2_0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "spidev";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
 	};
 };
 
