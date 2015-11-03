@@ -14,8 +14,26 @@
 #include <linux/clocksource.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
+#include <linux/spi/spi.h>
 
 #include <asm/mach/arch.h>
+
+static struct spi_board_info sunxi_board_info[] = {
+	// spi 2.0
+	{
+		.modalias	= "spidev",
+		.max_speed_hz	= 48000000, //48 Mbps
+		.bus_num	= 2,
+		.chip_select	= 0,	
+		.mode = SPI_MODE_1,
+	},
+};
+
+static void __init sunxi_board_init(void)
+{
+	spi_register_board_info(sunxi_board_info,
+			ARRAY_SIZE(sunxi_board_info));
+}
 
 static void __init sunxi_dt_cpufreq_init(void)
 {
@@ -31,6 +49,7 @@ static const char * const sunxi_board_dt_compat[] = {
 };
 
 DT_MACHINE_START(SUNXI_DT, "Allwinner sun4i/sun5i Families")
+	.init_machine   = sunxi_board_init,
 	.dt_compat	= sunxi_board_dt_compat,
 	.init_late	= sunxi_dt_cpufreq_init,
 MACHINE_END
